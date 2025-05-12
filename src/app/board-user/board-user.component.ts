@@ -35,23 +35,6 @@ export class BoardUserComponent implements OnInit {
     'Authorization': `Bearer ${token}`
   });
     
-  /*  this.userService.getUserBoard().subscribe({
-      next: data => {
-        this.content = data;
-      },
-      error: err => {
-        if (err.error) {
-          try {
-            const res = JSON.parse(err.error);
-            this.content = res.message;
-          } catch {
-            this.content = `Error with status: ${err.status} - ${err.statusText}`;
-          }
-        } else {
-          this.content = `Error with status: ${err.status}`;
-        }
-      }
-    });*/
   }
   loadUsers(): void {
     this.userService.getAllUsers().subscribe({
