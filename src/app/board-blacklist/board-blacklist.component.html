@@ -1,0 +1,159 @@
+<div class="container mt-4">
+    <!-- Search Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 class="text-primary">Blacklist Management</h3>
+      <form class="d-flex align-items-center" (submit)="onSearch()">
+        <input
+          type="text"
+          class="form-control me-2"
+          placeholder="🔍 Search by email or domain"
+          [(ngModel)]="searchQuery"
+          name="searchQuery"
+          style="max-width: 300px;"
+        />
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </form>
+      <button
+        class="btn btn-success ms-3"
+        data-bs-toggle="modal"
+        data-bs-target="#addBlacklistModal"
+      >
+        <i class="bi bi-plus-circle"></i> Add New
+      </button>
+    </div>
+  
+    <!-- Blacklist Table -->
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered align-middle">
+        <thead class="table-primary">
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Sender Name</th>
+            <th>Domain</th>
+            <th>Block Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let list of filteredBlacklist">
+            <td>{{ list.id }}</td>
+            <td>{{ list.senderEmail }}</td>
+            <td>{{ list.senderName }}</td>
+            <td>{{ list.domain }}</td>
+            <td>{{ list.blockDate }}</td>
+            <td>
+              <div class="dropdown">
+                <button
+                  class="btn btn-secondary btn-sm dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton{{ list.id }}"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu" [attr.aria-labelledby]="'dropdownMenuButton' + list.id">
+                  <li>
+                    <button
+                      class="dropdown-item text-danger"
+                      (click)="deleteFromBlackList(list.id)"
+                    >
+                      <i class="bi bi-trash"></i> Delete
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item text-warning"
+                      (click)="updateBlackList(list.id, list)"
+                    >
+                      <i class="bi bi-pencil"></i> Update
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Add Form Modal -->
+    <div
+      class="modal fade"
+      id="addBlacklistModal"
+      tabindex="-1"
+      aria-labelledby="addBlacklistModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="addBlacklistModalLabel">Add to Blacklist</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form (submit)="addToBlackList(newEntry)">
+              <div class="mb-3">
+                <label for="senderEmail" class="form-label">Sender Email</label>
+                <input
+                  type="email"
+                  id="senderEmail"
+                  class="form-control"
+                  placeholder="Enter sender email"
+                  [(ngModel)]="newEntry.senderEmail"
+                  name="senderEmail"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="domain" class="form-label">Domain</label>
+                <input
+                  type="text"
+                  id="domain"
+                  class="form-control"
+                  placeholder="Enter domain"
+                  [(ngModel)]="newEntry.domain"
+                  name="domain"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="senderName" class="form-label">Sender Name</label>
+                <input
+                  type="text"
+                  id="senderName"
+                  class="form-control"
+                  placeholder="Enter sender name"
+                  [(ngModel)]="newEntry.senderName"
+                  name="senderName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="blockDate" class="form-label">Block Date</label>
+                <input
+                  type="date"
+                  id="blockDate"
+                  class="form-control"
+                  [(ngModel)]="newEntry.blockDate"
+                  name="blockDate"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-plus-circle"></i> Add to Blacklist
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
