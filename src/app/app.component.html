@@ -5,7 +5,7 @@
       <li class="nav-item">
         <a href="/home" class="nav-link" routerLink="home">Home </a>
       </li>
-      <li class="nav-item" *ngIf="showAdminBoard">
+      <li class="nav-item" *ngIf="showAdminBoard|| showUserBoard">
         <a href="/blacklist" class="nav-link" routerLink="blacklist">Malicious email address </a>
       </li>
       <li class="nav-item" *ngIf="showAdminBoard">

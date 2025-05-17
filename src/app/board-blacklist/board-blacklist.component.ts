@@ -11,6 +11,7 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class BoardBlacklistComponent {
   content?: string;
+  roleAdmin: boolean | undefined;
   blacklist: any[] = [];
   selectedUserId?: string;
   roles: string[] = [];
@@ -54,7 +55,14 @@ onSearch() {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-      
+       // Check if the user has the admin role
+  //this.RoleService.getUserRoles().subscribe((roles: string[]) => {
+  //  this.isAdmin = roles.includes('ROLE_ADMIN');
+ // });
+
+ const user = this.storageService.getUser();
+ this.roleAdmin= user.roles.includes('ROLE_ADMIN');
+ console.log("user role:",this.roles)// Assuming roles is an array and you want the first role
     }
     loadBlackList(): void {
       this.blacklistService.getBlackList().subscribe({

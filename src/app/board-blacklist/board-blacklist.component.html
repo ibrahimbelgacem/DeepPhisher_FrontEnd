@@ -16,12 +16,13 @@
         </button>
       </form>
       <button
-        class="btn btn-success ms-3"
-        data-bs-toggle="modal"
-        data-bs-target="#addBlacklistModal"
-      >
-        <i class="bi bi-plus-circle"></i> Add New
-      </button>
+      class="btn btn-success ms-3"
+      data-bs-toggle="modal"
+      data-bs-target="#addBlacklistModal"
+      *ngIf="roleAdmin"
+    >
+      <i class="bi bi-plus-circle"></i> Add New
+    </button>
     </div>
   
     <!-- Blacklist Table -->
@@ -34,7 +35,7 @@
             <th>Sender Name</th>
             <th>Domain</th>
             <th>Block Date</th>
-            <th>Actions</th>
+            <th  *ngIf="roleAdmin">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -44,7 +45,7 @@
             <td>{{ list.senderName }}</td>
             <td>{{ list.domain }}</td>
             <td>{{ list.blockDate }}</td>
-            <td>
+            <td  *ngIf="roleAdmin">
               <div class="dropdown">
                 <button
                   class="btn btn-secondary btn-sm dropdown-toggle"
@@ -60,7 +61,9 @@
                     <button
                       class="dropdown-item text-danger"
                       (click)="deleteFromBlackList(list.id)"
+                      *ngIf="roleAdmin"
                     >
+                    
                       <i class="bi bi-trash"></i> Delete
                     </button>
                   </li>
