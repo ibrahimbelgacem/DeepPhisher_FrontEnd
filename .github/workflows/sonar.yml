@@ -25,23 +25,25 @@ jobs:
       - name: Build project
         run: npm run build --if-present
 
-      # ÉTAPE DE DÉBOGAGE - À AJOUTER TEMPORAIREMENT
-      - name: Debug SonarQube Configuration
+      # Installation manuelle du scanner SonarQube
+      - name: Download and install SonarQube Scanner
+        run: |
+          wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip -q sonar-scanner-cli-5.0.1.3006-linux.zip
+          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+          sudo ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+
+      # Analyse SonarQube avec paramètres explicites
+      - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-          echo "=== DÉBOGAGE CONFIGURATION SONARQUBE ==="
-          echo "SONAR_HOST_URL (masqué): ${SONAR_HOST_URL:0:10}..."
-          echo "SONAR_TOKEN défini: $([ -n "$SONAR_TOKEN" ] && echo "OUI" || echo "NON")"
-          echo "Contenu du fichier sonar-project.properties:"
-          cat sonar-project.properties || echo "Fichier non trouvé"
-          echo "Test de connectivité réseau vers l'URL SonarQube:"
-          curl -v --connect-timeout 10 "$SONAR_HOST_URL/api/system/status" || echo "Connexion échouée"
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          sonar-scanner \
+            -Dsonar.projectKey=DeepPhisher_FrontEnd \
+            -Dsonar.projectName=DeepPhisher_FrontEnd \
+            -Dsonar.sources=src \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.host.url="${SONAR_HOST_URL}" \
+            -Dsonar.token="${SONAR_TOKEN}" \
+            -X
