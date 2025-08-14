@@ -25,16 +25,23 @@ jobs:
       - name: Build project
         run: npm run build --if-present
 
-      # Installer le scanner SonarQube CLI
-      - name: Install SonarScanner
-        run: npm install -g sonarqube-scanner
-
-      # Lancer l'analyse en forçant les paramètres
-      - name: Run SonarQube Scanner
+      # ÉTAPE DE DÉBOGAGE - À AJOUTER TEMPORAIREMENT
+      - name: Debug SonarQube Configuration
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
-          sonar-scanner \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          echo "=== DÉBOGAGE CONFIGURATION SONARQUBE ==="
+          echo "SONAR_HOST_URL (masqué): ${SONAR_HOST_URL:0:10}..."
+          echo "SONAR_TOKEN défini: $([ -n "$SONAR_TOKEN" ] && echo "OUI" || echo "NON")"
+          echo "Contenu du fichier sonar-project.properties:"
+          cat sonar-project.properties || echo "Fichier non trouvé"
+          echo "Test de connectivité réseau vers l'URL SonarQube:"
+          curl -v --connect-timeout 10 "$SONAR_HOST_URL/api/system/status" || echo "Connexion échouée"
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
