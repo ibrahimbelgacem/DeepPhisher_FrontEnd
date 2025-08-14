@@ -10,46 +10,33 @@ jobs:
     name: Build & Analyze
     runs-on: ubuntu-latest
     steps:
-      # 1. Cloner le dépôt
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Nécessaire pour une analyse complète SonarQube
+          fetch-depth: 0  # Nécessaire pour une analyse pertinente
 
-      # 2. Configurer Node.js (adapter la version si besoin)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3. Installer les dépendances
       - name: Install dependencies
         run: npm ci
 
-      # 4. Construire le projet (si applicable)
       - name: Build project
         run: npm run build --if-present
 
-      # 5. Installer SonarScanner CLI
+      # Installer le scanner SonarQube
       - name: Install SonarScanner
         run: npm install -g sonarqube-scanner
 
-      # 6. Lancer l'analyse SonarQube
+      # Lancer l'analyse SonarQube
       - name: Run SonarQube Scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Assurez-vous que cette variable est bien l'URL publique
         run: |
           sonar-scanner \
             -Dsonar.projectKey=DeepPhisher_FrontEnd \
             -Dsonar.projectName=DeepPhisher_FrontEnd \
             -Dsonar.sources=src \
-            -Dsonar.sourceEncoding=UTF-8 \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
-
-      # 7. (Optionnel) Failing si Quality Gate est rouge
-      # - name: Check SonarQube Quality Gate
-      #   uses: sonarsource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            -Dsonar.sourceEncoding=UTF-8
