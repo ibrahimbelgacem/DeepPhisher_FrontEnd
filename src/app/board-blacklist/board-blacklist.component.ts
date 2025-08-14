@@ -38,7 +38,7 @@ onSearch() {
     return email.includes(query) || domain.includes(query);
   });
 }
-
+//Test sonarqube scanner
 //////end search/////
   constructor(private RoleService: RoleService,private blacklistService: BlacklistService,private storageService: StorageService) { }
   
