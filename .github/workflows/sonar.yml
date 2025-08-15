@@ -9,6 +9,18 @@ jobs:
   build:
     name: Build & Analyze
     runs-on: ubuntu-latest
+
+    services:
+      sonarqube:
+        image: sonarqube:latest
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl --fail http://localhost:9000/api/system/status || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,49 +31,35 @@ jobs:
         with:
           node-version: 18
 
+      - name: Wait for SonarQube to be ready
+        run: |
+          echo "⏳ Attente de SonarQube..."
+          for i in {1..30}; do
+            if curl -s http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
+              echo "✅ SonarQube est prêt"
+              break
+            fi
+            sleep 5
+          done
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
         run: npm run build --if-present
 
-      # DÉBOGAGE COMPLET
-      - name: Debug Environment and Connectivity
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          echo "=== DÉBOGAGE COMPLET ==="
-          echo "Variables d'environnement:"
-          echo "SONAR_HOST_URL: ${SONAR_HOST_URL}"
-          echo "SONAR_TOKEN défini: $([ -n "$SONAR_TOKEN" ] && echo "OUI" || echo "NON")"
-          echo ""
-          echo "Test de connectivité réseau:"
-          echo "Ping vers l'host SonarQube..."
-          ping -c 3 $(echo $SONAR_HOST_URL | sed 's|http[s]*://||' | cut -d: -f1 ) || echo "Ping échoué"
-          echo ""
-          echo "Test HTTP vers SonarQube:"
-          curl -v --connect-timeout 10 --max-time 30 "${SONAR_HOST_URL}/api/system/status" || echo "Connexion HTTP échouée"
-          echo ""
-          echo "Résolution DNS:"
-          nslookup $(echo $SONAR_HOST_URL | sed 's|http[s]*://||' | cut -d: -f1 ) || echo "Résolution DNS échouée"
+      - name: Install Sonar Scanner
+        run: npm install -g sonar-scanner
 
-      # Si le débogage montre que la connectivité fonctionne, utiliser cette méthode
-      - name: Manual SonarQube Analysis
+      - name: SonarQube Analysis
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: http://localhost:9000
+          SONAR_TOKEN: admin
         run: |
-          # Créer un fichier de configuration temporaire
-          cat > sonar-scanner.properties << EOF
-          sonar.host.url=${SONAR_HOST_URL}
-          sonar.token=${SONAR_TOKEN}
-          sonar.projectKey=DeepPhisher_FrontEnd
-          sonar.projectName=DeepPhisher_FrontEnd
-          sonar.sources=src
-          sonar.sourceEncoding=UTF-8
-          EOF
-          
-          # Installer et lancer le scanner
-          npm install -g sonarqube-scanner
-          sonar-scanner -Dproject.settings=sonar-scanner.properties -X
+          sonar-scanner \
+            -Dsonar.projectKey=DeepPhisher_FrontEnd \
+            -Dsonar.projectName=DeepPhisher_FrontEnd \
+            -Dsonar.sources=src \
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.host.url=${SONAR_HOST_URL} \
+            -Dsonar.login=${SONAR_TOKEN} -X
