@@ -36,6 +36,29 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="appEmail">Application Email</label>
+        <input
+          type="text"
+          class="form-control"
+          name="appEmail"
+          [(ngModel)]="form.appEmail"
+          required
+          minlength="3"
+          maxlength="20"
+          #appEmail="ngModel"
+          [ngClass]="{ 'is-invalid': f.submitted && appEmail.errors }"
+        />
+        <div class="invalid-feedback" *ngIf="username.errors && f.submitted">
+          <div *ngIf="username.errors['required']">Username is required</div>
+          <div *ngIf="username.errors['minlength']">
+            Username must be at least 3 characters
+          </div>
+          <div *ngIf="username.errors['maxlength']">
+            Username must be at most 20 characters
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
         <label for="email">Email</label>
         <input
           type="email"
@@ -73,6 +96,10 @@
           </div>
         </div>
       </div>
+      
+      
+
+
       <div class="form-group">
         <button class="btn btn-primary btn-block">Sign Up</button>
       </div>

@@ -9,6 +9,7 @@ import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardBlacklistComponent } from './board-blacklist/board-blacklist.component';
+import { EmailsComponent } from './board-email/board-email.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -19,6 +20,10 @@ const routes: Routes = [
   { path: 'user', component: BoardUserComponent },
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
+  { path: 'emails', component: EmailsComponent },
+
+
+
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

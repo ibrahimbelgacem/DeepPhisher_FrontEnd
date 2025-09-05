@@ -8,14 +8,14 @@ describe('HomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HomeComponent]
+        declarations: [HomeComponent]
+      });
+      fixture = TestBed.createComponent(HomeComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
   });
-});

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,9 +12,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardUserComponent } from './board-user/board-user.component';
+import { BoardBlacklistComponent } from './board-blacklist/board-blacklist.component';
+import { EmailsComponent } from './board-email/board-email.component';
 
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
-import { BoardBlacklistComponent } from './board-blacklist/board-blacklist.component';
 
 @NgModule({
   declarations: [
@@ -26,13 +27,15 @@ import { BoardBlacklistComponent } from './board-blacklist/board-blacklist.compo
     BoardAdminComponent,
     BoardModeratorComponent,
     BoardUserComponent,
-    BoardBlacklistComponent
+    BoardBlacklistComponent,
+    EmailsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     FormsModule,
-    HttpClientModule
+    ReactiveFormsModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

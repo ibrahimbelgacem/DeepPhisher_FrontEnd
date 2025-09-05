@@ -29,10 +29,14 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
-
+    console.log('=== DÉBUT DÉBOGAGE ===');
+    this.isLoggedIn = this.storageService.isLoggedIn();
+  console.log('1. isLoggedIn:', this.isLoggedIn);
     if (this.isLoggedIn) {
       const user = this.storageService.getUser();
+      console.log('2. User complet:', user);
       this.roles = user.roles;
+      console.log('3. Rôles de l’utilisateur:', this.roles);  
 
       this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
       this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
