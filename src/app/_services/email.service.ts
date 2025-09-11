@@ -16,22 +16,22 @@ export class EmailService {
   }
 
   // Récupérer directement les mails classés de FastAPI via Spring Boot
-  fetchMails(request: any): Observable<any[]> {
-    const token = this.storageService.getToken();
+  fetchMails(): Observable<any[]> {
+  const token = this.storageService.getToken();
 
-    if (!token) {
-      return throwError(() => new Error('No authentication token found'));
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-    // POST → /api/fetch avec email+password
-    return this.http.post<{ emails: any[] }>(API_URL + 'fetch', request, { headers })
-                    .pipe(
-                      map(res => res.emails) // renvoie directement le tableau d'emails
-                    );
+  if (!token) {
+    return throwError(() => new Error('No authentication token found'));
   }
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  // Appelle juste le backend qui gère les credentials côté serveur
+  return this.http.get<{ emails: any[] }>(API_URL + 'fetch', { headers })
+                  .pipe(
+                    map(res => res.emails)
+                  );
+}
+
 }

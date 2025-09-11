@@ -16,6 +16,14 @@ import { BoardBlacklistComponent } from './board-blacklist/board-blacklist.compo
 import { EmailsComponent } from './board-email/board-email.component';
 
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -35,9 +43,15 @@ import { httpInterceptorProviders } from './_helpers/http.interceptor';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+     BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

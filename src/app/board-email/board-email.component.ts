@@ -9,9 +9,8 @@ import { EmailService } from '../_services/email.service';
 export class EmailsComponent implements OnInit {
   emails: any[] = [];
   filteredEmails: any[] = [];
-
-  // Pour la recherche
   searchQuery: string = '';
+  loading: boolean = false;  // <-- nouvel indicateur
 
   constructor(private emailService: EmailService) {}
 
@@ -20,26 +19,23 @@ export class EmailsComponent implements OnInit {
   }
 
   loadEmails(): void {
+    this.loading = true;  // début du chargement
     console.log("Chargement des emails...");
 
-    const request = {
-      email: "mayssejelliti@gmail.com",
-      password: "yfai vxhz qwej kkvx"
-    };
-
-    this.emailService.fetchMails(request).subscribe({
+    this.emailService.fetchMails().subscribe({
       next: emails => {
         this.emails = emails;
         this.filteredEmails = [...emails];
         console.log("Emails reçus:", emails);
+        this.loading = false;  // fin du chargement
       },
       error: err => {
         console.error('Erreur lors du chargement des emails:', err);
+        this.loading = false;  // fin du chargement même en cas d'erreur
       }
     });
   }
 
-  // Méthode pour filtrer les emails
   onSearch(): void {
     const query = this.searchQuery.toLowerCase();
     this.filteredEmails = this.emails.filter(email => {
