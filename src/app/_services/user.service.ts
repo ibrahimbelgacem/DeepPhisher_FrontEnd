@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { StorageService } from './storage.service';
 
-const API_URL = 'http://localhost:8082/api/test/';
+const API_URL = 'http://localhost:8082/api/test';
 const API_URL_users = 'http://localhost:8082/api/auth/';
 
 @Injectable({
@@ -15,15 +15,7 @@ export class UserService {
     console.log('Current token:', this.storageService.getToken()); // Debug token
   }
   
- /* private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('USER_KEY');
-    if (!token) {
-        throw new Error('No authentication token found');
-    }
-    return new HttpHeaders({
-        'Authorization': `Bearer ${token}`
-    });
-}*/
+
 
   getPublicContent(): Observable<any> {
     console.log('Current token:', this.storageService.getToken()); // Debug token
@@ -36,7 +28,7 @@ export class UserService {
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
-        return this.http.get(API_URL + 'all', {headers, responseType: 'text' });
+        return this.http.get(API_URL+'/user' , {headers, responseType: 'text' });
   
   }
 

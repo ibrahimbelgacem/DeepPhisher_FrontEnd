@@ -1,49 +1,54 @@
 import { Injectable } from '@angular/core';
+import { KeycloakService } from '../keycloak/keycloak.service';
 
 const USER_KEY = 'auth-user';
-const TOKEN_KEY = 'auth-token'; // Add constant for token
+const TOKEN_KEY = 'auth-token';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
-  constructor() {}
+
+  constructor(private keycloakService: KeycloakService) {}
+
 
   clean(): void {
-    window.localStorage.clear();
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
   }
 
-  public saveUser(user: any): void {
-    window.localStorage.removeItem(USER_KEY);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
-    
-  }
-
-  public getUser(): any {
-    const user = window.localStorage.getItem(USER_KEY);
-    if (user) {
-      return JSON.parse(user);
+  public async saveUserFromKeycloak(): Promise<void> {
+    const kc = this.keycloakService.keycloak;
+    if (kc && kc.tokenParsed) {
+      localStorage.setItem(USER_KEY, JSON.stringify(kc.tokenParsed));
+      localStorage.setItem(TOKEN_KEY, kc.token!);
+      console.log('Saved user and token from Keycloak');
     }
-
-    return null;
   }
-// Add token management methods
-public saveToken(accessToken: string): void {
-  window.localStorage.removeItem(TOKEN_KEY);
-  window.localStorage.setItem(TOKEN_KEY, accessToken);
-  console.log('Saving token:', accessToken);
-}
 
-public getToken(): string | null {
-  console.log("get saved token",TOKEN_KEY)
-  return window.localStorage.getItem(TOKEN_KEY);
-}
-  public isLoggedIn(): boolean {
-    const user = window.localStorage.getItem(USER_KEY);
-    if (user) {
+  
+  public getUser(): any {
+    const user = localStorage.getItem(USER_KEY);
+    return user ? JSON.parse(user) : null;
+  }
+
+ 
+  public async getToken(): Promise<string | null> {
+    
+    const token = await this.keycloakService.getToken();
+     console.log('Token envoyé:', token);
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+    return token;
+  }
+
+  public async isLoggedIn(): Promise<boolean> {
+    const kc = this.keycloakService.keycloak;
+    if (kc.authenticated) {
+      await this.saveUserFromKeycloak();
       return true;
     }
-
     return false;
   }
 }
